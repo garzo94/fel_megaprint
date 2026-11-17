@@ -179,8 +179,13 @@ class AccountMove(models.Model):
                                 data=data, headers=headers)
                             resultadoXML = etree.XML(bytes(r.text, encoding='utf-8'))
                             if len(resultadoXML.xpath("//listado_errores")) == 0:
-                                pdf = resultadoXML.xpath("//pdf")[0].text
-                                factura.pdf_fel = pdf
+                                pdf_nodes = resultadoXML.xpath("//pdf")
+                                pdf = pdf_nodes[0].text if pdf_nodes else None
+                                if pdf:
+                                    factura.pdf_fel = pdf
+                                else:
+                                    factura.message_post(body='<p>Factura anulada en SAT pero no se pudo obtener el PDF de anulación (respuesta vacía del certificador).</p>')
+                                    logging.warn('retornarPDF anulacion - respuesta sin PDF: %s' % r.text)
 
                         if len(resultadoXML.xpath("//listado_errores")) > 0:
                             raise UserError(r.text)
