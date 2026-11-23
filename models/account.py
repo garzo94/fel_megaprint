@@ -173,7 +173,7 @@ class AccountMove(models.Model):
                             headers = {"Content-Type": "application/xml", "authorization": "Bearer " + token}
                             data = '<?xml version="1.0" encoding="UTF-8"?><RetornaPDFRequest><uuid>{}</uuid></RetornaPDFRequest>'.format(
                                 factura.firma_fel)
-                            time.sleep(45)
+                            time.sleep(35)
                             r = requests.post(
                                 'https://' + request_url + '.ifacere-fel.com/' + request_path + 'api/retornarPDF',
                                 data=data, headers=headers)
